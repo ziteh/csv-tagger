@@ -17,6 +17,7 @@ namespace csv_tagger
     {
         public tagsCol[] tagsDatabase = new tagsCol[100];
         public string MessageText;
+        public int maxTagLayer = 0;
         public Form1()
         {
 
@@ -51,14 +52,15 @@ namespace csv_tagger
                     tagsDatabase[(tags.serial_number - 1)].tagsLayer[9] = tags.tags_layer9;
                 }
             }
+
             sortTags();
-            MessageBox.Show("OK");
+//            MessageBox.Show("OK");
 //            creatTagsTreeView();
             for (int i = 0; i <50; ++i)
             {
                 MessageText += tagsDatabase[i].layer.ToString() + "\n";
             }
-            MessageBox.Show(MessageText);
+            MessageBox.Show(MessageText+"maxlayer:"+ maxTagLayer.ToString());
         }
 
         public void sortTags()
@@ -81,6 +83,12 @@ namespace csv_tagger
                     {
                         // Next layer
                         ++layer;
+
+                        // Uadate max-tag-layer
+                        if (layer > maxTagLayer)
+                        {
+                            maxTagLayer = layer;
+                        }
                     }
                     // folder-tags
                     else if (tagsDatabase[i].tagsLayer[layer].IndexOf("#") == 0)
