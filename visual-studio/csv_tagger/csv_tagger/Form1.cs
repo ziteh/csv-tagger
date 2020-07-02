@@ -29,7 +29,7 @@ namespace csv_tagger
             }
 
             // Read tags_database.csv
-            using (var reader = new StreamReader(@"C:\Users\wk415\Google Drive (wk415937@gmail.com)\01-Projects\PFDB_system\tags_database.csv"))
+            using (var reader = new StreamReader(@"../../../../../csv/tags_database.csv"))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 var records = csv.GetRecords<Tags>();
