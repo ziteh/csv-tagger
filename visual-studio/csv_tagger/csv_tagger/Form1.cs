@@ -50,6 +50,42 @@ namespace csv_tagger
                     tagsDatabase[(tags.serial_number - 1)].tagsLayer[9] = tags.tags_layer9;
                 }
             }
+            creatTagsTreeView();
+
+        }
+
+        public void creatTagsTreeView()
+        {
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node0-0-0");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node0-0", new System.Windows.Forms.TreeNode[] {
+            treeNode1});
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Node0-1");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Node0-2");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Node0-3");
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Node0", new System.Windows.Forms.TreeNode[] {
+            treeNode2,
+            treeNode3,
+            treeNode4,
+            treeNode5});
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Node1");
+            treeNode1.Name = "Node0-0-0";
+            treeNode1.Text = "Node0-0-0";
+            treeNode2.Name = "Node0-0";
+            treeNode2.Text = "Node0-0";
+            treeNode3.Name = "Node0-1";
+            treeNode3.Text = "Node0-1";
+            treeNode4.Name = "Node0-2";
+            treeNode4.Text = "Node0-2";
+            treeNode5.Name = "Node0-3";
+            treeNode5.Text = "Node0-3";
+            treeNode6.Name = "Node0";
+            treeNode6.Text = "Node0";
+            treeNode7.Name = "Node1";
+            treeNode7.Text = "Node1";
+            this.treeViewTags.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode6,
+            treeNode7});
+
         }
     }
     public class tagsCol
