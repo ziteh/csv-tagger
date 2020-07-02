@@ -71,7 +71,7 @@ namespace csv_tagger
                     if(tagsDatabase[i].tagsLayer[layer] == null)
                     {
                         tagsDatabase[i].type = tagType.emptyTag;
-                        tagsDatabase[i].layer = layer;
+                        tagsDatabase[i].layer = -1;
 
                         // Break loop
                         layer = -1;
