@@ -16,6 +16,7 @@ namespace csv_tagger
     public partial class Form1 : Form
     {
         public tagsCol[] tagsDatabase = new tagsCol[100];
+        public string MessageText;
         public Form1()
         {
 
@@ -50,12 +51,83 @@ namespace csv_tagger
                     tagsDatabase[(tags.serial_number - 1)].tagsLayer[9] = tags.tags_layer9;
                 }
             }
-            creatTagsTreeView();
+            sortTags();
+            MessageBox.Show("OK");
+//            creatTagsTreeView();
+            for (int i = 0; i <50; ++i)
+            {
+                MessageText += tagsDatabase[i].layer.ToString() + "\n";
+            }
+            MessageBox.Show(MessageText);
+        }
 
+        public void sortTags()
+        {
+            for (int i = 0; i < 100; ++i)
+            {
+                for (int layer = 0; layer != -1;)
+                {
+                    // empty-tags
+                    if(tagsDatabase[i].tagsLayer[layer] == null)
+                    {
+                        tagsDatabase[i].type = tagType.emptyTag;
+                        tagsDatabase[i].layer = layer;
+
+                        // Break loop
+                        layer = -1;
+                    }
+                    // sub-tags
+                    else if (tagsDatabase[i].tagsLayer[layer] == "@")
+                    {
+                        // Next layer
+                        ++layer;
+                    }
+                    // folder-tags
+                    else if (tagsDatabase[i].tagsLayer[layer].IndexOf("#") == 0)
+                    {
+                        tagsDatabase[i].type = tagType.folderTag;
+                        tagsDatabase[i].layer = layer;
+
+                        // Break loop
+                        layer = -1;
+                    }
+                    // normal-tags
+                    else
+                    {
+                        tagsDatabase[i].type = tagType.normalTag;
+                        tagsDatabase[i].layer = layer;
+                        
+                        // Break loop
+                        layer = -1;
+                    }
+                }
+            }
         }
 
         public void creatTagsTreeView()
         {
+            for (int i = 0; i<100; ++i)
+            {
+                int j = 0;
+
+                // sub-tags
+                if (tagsDatabase[i].tagsLayer[j] == "@")
+                {
+
+                }
+                // folder-tags
+                else if (tagsDatabase[i].tagsLayer[j] == "#")
+                {
+
+                }
+                // normal-tags
+                else
+                {
+                    System.Windows.Forms.TreeNode treeNode = new System.Windows.Forms.TreeNode(tagsDatabase[i].tagsLayer[j]);
+                }
+            }
+
+
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Node0-0-0");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Node0-0", new System.Windows.Forms.TreeNode[] {
             treeNode1});
@@ -88,9 +160,18 @@ namespace csv_tagger
 
         }
     }
+
     public class tagsCol
     {
         public int serialNumber;
         public string[] tagsLayer;
+        public tagType type;
+        public int layer;
+    }
+    public enum tagType
+    {
+        emptyTag,
+        normalTag,
+        folderTag
     }
 }
