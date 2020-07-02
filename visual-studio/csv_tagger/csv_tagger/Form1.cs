@@ -15,9 +15,9 @@ namespace csv_tagger
 {
     public partial class Form1 : Form
     {
+        public tagsCol[] tagsDatabase = new tagsCol[100];
         public Form1()
         {
-            tagsCol[] tagsDatabase = new tagsCol[100];
 
             InitializeComponent();
 
