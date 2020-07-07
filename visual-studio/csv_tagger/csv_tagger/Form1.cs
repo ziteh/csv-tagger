@@ -127,10 +127,15 @@ namespace csv_tagger
                     }
                 }
             }*/
-            string rootTag;
-            rootTag = "rootTag1";
-            treeViewTags.Nodes.Add(rootTag);
+            
+            string tagName;
+            tagName = "rootTag1";
+            treeViewTags.Nodes.Add(tagName);
+            treeViewTags.EndUpdate();
 
+            tagName = "subTag1";
+            //treeViewTags.SelectedNode.Nodes.Add(tagName);
+            treeViewTags.Nodes[0].Nodes.Add(tagName);
         }
     }
 
