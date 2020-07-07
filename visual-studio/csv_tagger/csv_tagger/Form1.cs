@@ -134,8 +134,19 @@ namespace csv_tagger
             treeViewTags.EndUpdate();
 
             tagName = "subTag1";
-            //treeViewTags.SelectedNode.Nodes.Add(tagName);
-            treeViewTags.Nodes[0].Nodes.Add(tagName);
+//            treeViewTags.Nodes[1].Nodes.Add(tagName);
+
+            TreeNode node;
+
+            node = treeViewTags.Nodes.Add("Master node");
+            node.Nodes.Add("Child node");
+            node.Nodes.Add("Child node 2");
+
+            node = treeViewTags.Nodes.Add("Master node 2");
+            node.Nodes.Add("mychild");
+            node.Nodes.Add("mychild");
+
+            treeViewTags.ExpandAll();
         }
     }
 
