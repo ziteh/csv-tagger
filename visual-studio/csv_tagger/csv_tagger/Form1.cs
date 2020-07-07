@@ -119,7 +119,28 @@ namespace csv_tagger
 
         public void creatTreeViewTags()
         {
+            int row = 0;
+            int layer = 0;
             TreeNode node;
+
+            while (isEmptyTag(row) == false)
+            {
+                // Update layer.
+                layer = getLayerOfTag(row);
+
+                if (layer == 0)
+                {
+                    // Add root tag.
+                    node = treeViewTags.Nodes.Add(tagsDatabase[row].tagsLayer[0]);
+                }
+                else
+                {
+                    if (layer == 1)
+                    {
+
+                    }
+                }
+            }
 
             node = treeViewTags.Nodes.Add("Master node");
             node.Nodes.Add("Child node");
@@ -200,6 +221,21 @@ namespace csv_tagger
             else
                 return false;
         }
+
+        private tagRelationType getNextTagRelation (int myRow)
+        {
+            int myTagLayer = getLayerOfTag(myRow);
+            int nextTagLayer = getLayerOfTag(myRow + 1);
+
+            if (nextTagLayer == myTagLayer + 1)
+                return tagRelationType.mySubTag;
+            else if (nextTagLayer == myTagLayer - 1)
+                return tagRelationType.myMasterTag;
+            else if (nextTagLayer == myTagLayer)
+                return tagRelationType.myPeerTag;
+            else
+                return tagRelationType.noRelation;
+        }
     }
 
     public class tagsCol
@@ -214,5 +250,13 @@ namespace csv_tagger
         emptyTag,
         normalTag,
         folderTag
+    }
+
+    public enum tagRelationType
+    {
+        mySubTag,
+        myPeerTag,
+        myMasterTag,
+        noRelation
     }
 }
