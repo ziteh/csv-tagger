@@ -135,7 +135,7 @@ namespace csv_tagger
         }
 
         /// <summary>
-        /// Get the number of a row of tagsDatabase.
+        /// Get the layer of a row of tagsDatabase.
         /// </summary>
         /// <param name="row"></param>
         /// <returns></returns>
@@ -143,10 +143,18 @@ namespace csv_tagger
         {
             int layer = 0;
 
-            while (tagsDatabase[row].tagsLayer[layer] == "@")
+            if (isEmptyTag(row))
             {
-                // Next layer.
-                ++layer;
+                // empty-tags
+                layer = -1;
+            }
+            else
+            {
+                while (tagsDatabase[row].tagsLayer[layer] == "@")
+                {
+                    // Next layer.
+                    ++layer;
+                }
             }
 
             return (int)layer;
@@ -162,7 +170,7 @@ namespace csv_tagger
             tagType type;
 
             // empty-tags
-            if (tagsDatabase[row].tagsLayer[getLayerOfTag(row)] == null)
+            if (isEmptyTag(row))
             {
                 type = tagType.emptyTag;
             }
@@ -178,6 +186,19 @@ namespace csv_tagger
             }
 
             return (tagType)type;
+        }
+
+        /// <summary>
+        /// Return TRUE if the tag is empty-tag.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private bool isEmptyTag(int row)
+        {
+            if (tagsDatabase[row].tagsLayer[0] == null)
+                return true;
+            else
+                return false;
         }
     }
 
