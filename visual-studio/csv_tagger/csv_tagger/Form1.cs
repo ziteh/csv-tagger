@@ -141,6 +141,8 @@ namespace csv_tagger
             node = treeViewTags.Nodes.Add("Master node");
             node.Nodes.Add("Child node");
             node.Nodes.Add("Child node 2");
+            node = node.Nodes.Add("CN 3");
+            node.Nodes.Add("CCN1");
 
             node = treeViewTags.Nodes.Add("Master node 2");
             node.Nodes.Add("mychild");
