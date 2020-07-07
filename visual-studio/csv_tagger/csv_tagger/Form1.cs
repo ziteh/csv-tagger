@@ -19,6 +19,8 @@ namespace csv_tagger
         public string MessageText;
         public int maxTagLayer = 0;
 
+        private const int maxNumberOfLayer = 10;
+
         public Form1()
         {
 
@@ -55,8 +57,8 @@ namespace csv_tagger
             }
 
             sortTags();
-//            MessageBox.Show("OK");
-            creatTagsTreeView();
+            //            MessageBox.Show("OK");
+            creatTreeViewTags();
 
             /*for (int i = 0; i <50; ++i)
             {
@@ -73,7 +75,7 @@ namespace csv_tagger
                 for (int layer = 0; layer != -1;)
                 {
                     // empty-tags
-                    if(tagsDatabase[i].tagsLayer[layer] == null)
+                    if (tagsDatabase[i].tagsLayer[layer] == null)
                     {
                         tagsDatabase[i].type = tagType.emptyTag;
                         tagsDatabase[i].layer = -1;
@@ -107,7 +109,7 @@ namespace csv_tagger
                     {
                         tagsDatabase[i].type = tagType.normalTag;
                         tagsDatabase[i].layer = layer;
-                        
+
                         // Break loop
                         layer = -1;
                     }
@@ -115,27 +117,8 @@ namespace csv_tagger
             }
         }
 
-        public void creatTagsTreeView()
+        public void creatTreeViewTags()
         {
-            /*for (int i =0;i<50;++i)
-            {
-                for (int j = maxTagLayer; j >= 0; --j)
-                {
-                    if (tagsDatabase[i].layer == j)
-                    {
-                        System.Windows.Forms.TreeNode treeNode = new System.Windows.Forms.TreeNode(tagsDatabase[i].tagsLayer[(tagsDatabase[i].layer)]);
-                    }
-                }
-            }*/
-            
-            string tagName;
-            tagName = "rootTag1";
-            treeViewTags.Nodes.Add(tagName);
-            treeViewTags.EndUpdate();
-
-            tagName = "subTag1";
-//            treeViewTags.Nodes[1].Nodes.Add(tagName);
-
             TreeNode node;
 
             node = treeViewTags.Nodes.Add("Master node");
@@ -149,6 +132,52 @@ namespace csv_tagger
             node.Nodes.Add("mychild");
 
             treeViewTags.ExpandAll();
+        }
+
+        /// <summary>
+        /// Get the number of a row of tagsDatabase.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private int getLayerOfTag(int row)
+        {
+            int layer = 0;
+
+            while (tagsDatabase[row].tagsLayer[layer] == "@")
+            {
+                // Next layer.
+                ++layer;
+            }
+
+            return (int)layer;
+        }
+
+        /// <summary>
+        /// Get the type of a row of tagsDatabase.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+        private tagType getTypeOfTag(int row)
+        {
+            tagType type;
+
+            // empty-tags
+            if (tagsDatabase[row].tagsLayer[getLayerOfTag(row)] == null)
+            {
+                type = tagType.emptyTag;
+            }
+            // folder-tags
+            else if (tagsDatabase[row].tagsLayer[getLayerOfTag(row)].IndexOf("#") == 0)
+            {
+                type = tagType.folderTag;
+            }
+            // normal-tags
+            else
+            {
+                type = tagType.normalTag;
+            }
+
+            return (tagType)type;
         }
     }
 
