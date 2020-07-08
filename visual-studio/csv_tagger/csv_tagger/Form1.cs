@@ -232,7 +232,12 @@ namespace csv_tagger
                 return false;
         }
 
-        private tagRelationType getNextTagRelation (int myRow)
+        /// <summary>
+        /// Get next tag relation.
+        /// </summary>
+        /// <param name="myRow"></param>
+        /// <returns></returns>
+        private tagRelationType getNextTagRelation(int myRow)
         {
             int myTagLayer = getLayerOfTag(myRow);
             int nextTagLayer = getLayerOfTag(myRow + 1);
