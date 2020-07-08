@@ -121,25 +121,69 @@ namespace csv_tagger
         public void creatTreeViewTags()
         {
             int row = 0;
-            int layer = 0;
             TreeNode node;
 
             while (isEmptyTag(row) == false)
             {
-                // Update layer.
-                layer = getLayerOfTag(row);
-
-                if (layer == 0)
+                // If it's root-tag.
+                if (tagsDatabase[row].layer == 0)
                 {
+                    int lestRowOfThisRootTag = row;
+                    int maxLayerOfThisRootTag = 0;
+
                     // Add root tag.
                     node = treeViewTags.Nodes.Add(tagsDatabase[row].tagsLayer[0]);
+
+                    // Get the lest row of this root-tag.
+                    while (tagsDatabase[lestRowOfThisRootTag + 1].layer != 0)
+                    {
+                        ++lestRowOfThisRootTag;
+                    }
+
+                    for (int layer = 1; layer < 10; ++layer)
+                    {
+                        // Have sub-tag.
+                        for (int j = row + 1; j < lestRowOfThisRootTag + 1; ++j)
+                        {
+                            // If next tag isn't my sub-tag.
+                            if ((tagsDatabase[j].layer == layer) &&
+                                (tagsDatabase[j+1].layer != layer+1))
+                            {
+                                node.Nodes.Add(tagsDatabase[j].tagsLayer[tagsDatabase[j].layer]);
+                            }
+                        }
+
+                        // Didn't have sub-tag.
+                        for (int j = row + 1; j < lestRowOfThisRootTag + 1; ++j)
+                        {
+                            // If next tag is my sub-tag.
+                            if ((tagsDatabase[j].layer == layer) &&
+                                (tagsDatabase[j+1].layer == layer+1))
+                            {
+                                node = node.Nodes.Add(tagsDatabase[j].tagsLayer[tagsDatabase[j].layer]);
+                            }
+                        }
+                    }
+
+                    // Next row of tagsDatabase.
+                    ++row;
+
+                    while (tagsDatabase[row].layer != 0)
+                    {
+                        if (tagsDatabase[row + 1].layer == tagsDatabase[row].layer + 1)
+                        {
+                            // Next tag is my sub-tag.
+                            node = node.Nodes.Add(tagsDatabase[row].tagsLayer[tagsDatabase[row].layer]);
+                        }
+                        else if (tagsDatabase[row + 1].layer == tagsDatabase[row].layer)
+                        {
+                            // Next tag in my peer-tag.
+                            node.Nodes.Add(tagsDatabase[row].tagsLayer[tagsDatabase[row].layer]);
+                        }
+                    }
                 }
                 else
                 {
-                    if (layer == 1)
-                    {
-
-                    }
                 }
             }
 
