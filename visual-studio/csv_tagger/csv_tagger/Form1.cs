@@ -56,8 +56,9 @@ namespace csv_tagger
                 }
             }
 
-            sortTags();
+            //            sortTags();
             //            MessageBox.Show("OK");
+            arrangeTags();
             creatTreeViewTags();
 
             /*for (int i = 0; i <50; ++i)
@@ -153,6 +154,15 @@ namespace csv_tagger
             node.Nodes.Add("mychild");
 
             treeViewTags.ExpandAll();
+        }
+
+        private void arrangeTags()
+        {
+            for (int row = 0; row < 50; ++row)
+            {
+                tagsDatabase[row].layer = getLayerOfTag(row);
+                tagsDatabase[row].type = getTypeOfTag(row);
+            }
         }
 
         /// <summary>
