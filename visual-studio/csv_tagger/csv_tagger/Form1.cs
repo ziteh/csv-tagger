@@ -10,16 +10,17 @@ using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
 using CsvHelper;
+using System.Security.AccessControl;
 
 namespace csv_tagger
 {
     public partial class Form1 : Form
     {
-        public tagsCol[] tagsDatabase = new tagsCol[100];
-        public string MessageText;
-        public int maxTagLayer = 0;
-
+        private int maxTagLayer = 0;
+        private int maxTagRow = 50;
         private const int maxNumberOfLayer = 10;
+
+        private tagsCol[] tagsDatabase = new tagsCol[100];
 
         public Form1()
         {
@@ -56,69 +57,14 @@ namespace csv_tagger
                 }
             }
 
-            //            sortTags();
-            //            MessageBox.Show("OK");
+            //                        MessageBox.Show("OK");
+
             arrangeTags();
             creatTreeViewTags();
-
-            /*for (int i = 0; i <50; ++i)
-            {
-                MessageText += tagsDatabase[i].layer.ToString() + "\n";
-            }
-            MessageBox.Show(MessageText+"maxlayer:"+ maxTagLayer.ToString());*/
+            treeViewTags.ExpandAll();
         }
 
-        // Count layer of tag and get type of tag. 
-        public void sortTags()
-        {
-            for (int i = 0; i < 100; ++i)
-            {
-                for (int layer = 0; layer != -1;)
-                {
-                    // empty-tags
-                    if (tagsDatabase[i].tagsLayer[layer] == null)
-                    {
-                        tagsDatabase[i].type = tagType.emptyTag;
-                        tagsDatabase[i].layer = -1;
-
-                        // Break loop
-                        layer = -1;
-                    }
-                    // sub-tags
-                    else if (tagsDatabase[i].tagsLayer[layer] == "@")
-                    {
-                        // Next layer
-                        ++layer;
-
-                        // Uadate max-tag-layer
-                        if (layer > maxTagLayer)
-                        {
-                            maxTagLayer = layer;
-                        }
-                    }
-                    // folder-tags
-                    else if (tagsDatabase[i].tagsLayer[layer].IndexOf("#") == 0)
-                    {
-                        tagsDatabase[i].type = tagType.folderTag;
-                        tagsDatabase[i].layer = layer;
-
-                        // Break loop
-                        layer = -1;
-                    }
-                    // normal-tags
-                    else
-                    {
-                        tagsDatabase[i].type = tagType.normalTag;
-                        tagsDatabase[i].layer = layer;
-
-                        // Break loop
-                        layer = -1;
-                    }
-                }
-            }
-        }
-
-        public void creatTreeViewTags()
+        private void creatTreeViewTags()
         {
             int row = 0;
             TreeNode node;
@@ -134,20 +80,25 @@ namespace csv_tagger
                     // Add root tag.
                     node = treeViewTags.Nodes.Add(tagsDatabase[row].tagsLayer[0]);
 
-                    // Get the lest row of this root-tag.
+                    // Get the lest row of this root-tag and the max layer of this root-tag.
                     while (tagsDatabase[lestRowOfThisRootTag + 1].layer != 0)
                     {
                         ++lestRowOfThisRootTag;
+
+                        if (tagsDatabase[lestRowOfThisRootTag].layer > maxLayerOfThisRootTag)
+                        {
+                            maxLayerOfThisRootTag = tagsDatabase[lestRowOfThisRootTag].layer;
+                        }
                     }
 
-                    for (int layer = 1; layer < 10; ++layer)
+                    for (int layer = 1; layer < maxLayerOfThisRootTag + 1; ++layer)
                     {
                         // Have sub-tag.
                         for (int j = row + 1; j < lestRowOfThisRootTag + 1; ++j)
                         {
                             // If next tag isn't my sub-tag.
                             if ((tagsDatabase[j].layer == layer) &&
-                                (tagsDatabase[j+1].layer != layer+1))
+                                (tagsDatabase[j + 1].layer != layer + 1))
                             {
                                 node.Nodes.Add(tagsDatabase[j].tagsLayer[tagsDatabase[j].layer]);
                             }
@@ -158,46 +109,16 @@ namespace csv_tagger
                         {
                             // If next tag is my sub-tag.
                             if ((tagsDatabase[j].layer == layer) &&
-                                (tagsDatabase[j+1].layer == layer+1))
+                                (tagsDatabase[j + 1].layer == layer + 1))
                             {
                                 node = node.Nodes.Add(tagsDatabase[j].tagsLayer[tagsDatabase[j].layer]);
                             }
                         }
                     }
-
-                    // Next row of tagsDatabase.
-                    ++row;
-
-                    while (tagsDatabase[row].layer != 0)
-                    {
-                        if (tagsDatabase[row + 1].layer == tagsDatabase[row].layer + 1)
-                        {
-                            // Next tag is my sub-tag.
-                            node = node.Nodes.Add(tagsDatabase[row].tagsLayer[tagsDatabase[row].layer]);
-                        }
-                        else if (tagsDatabase[row + 1].layer == tagsDatabase[row].layer)
-                        {
-                            // Next tag in my peer-tag.
-                            node.Nodes.Add(tagsDatabase[row].tagsLayer[tagsDatabase[row].layer]);
-                        }
-                    }
                 }
-                else
-                {
-                }
+                // Next row of tagsDatabase.
+                ++row;
             }
-
-            node = treeViewTags.Nodes.Add("Master node");
-            node.Nodes.Add("Child node");
-            node.Nodes.Add("Child node 2");
-            node = node.Nodes.Add("CN 3");
-            node.Nodes.Add("CCN1");
-
-            node = treeViewTags.Nodes.Add("Master node 2");
-            node.Nodes.Add("mychild");
-            node.Nodes.Add("mychild");
-
-            treeViewTags.ExpandAll();
         }
 
         private void arrangeTags()
@@ -275,26 +196,6 @@ namespace csv_tagger
             else
                 return false;
         }
-
-        /// <summary>
-        /// Get next tag relation.
-        /// </summary>
-        /// <param name="myRow"></param>
-        /// <returns></returns>
-        private tagRelationType getNextTagRelation(int myRow)
-        {
-            int myTagLayer = getLayerOfTag(myRow);
-            int nextTagLayer = getLayerOfTag(myRow + 1);
-
-            if (nextTagLayer == myTagLayer + 1)
-                return tagRelationType.mySubTag;
-            else if (nextTagLayer == myTagLayer - 1)
-                return tagRelationType.myMasterTag;
-            else if (nextTagLayer == myTagLayer)
-                return tagRelationType.myPeerTag;
-            else
-                return tagRelationType.noRelation;
-        }
     }
 
     public class tagsCol
@@ -309,13 +210,5 @@ namespace csv_tagger
         emptyTag,
         normalTag,
         folderTag
-    }
-
-    public enum tagRelationType
-    {
-        mySubTag,
-        myPeerTag,
-        myMasterTag,
-        noRelation
     }
 }
