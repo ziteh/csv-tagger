@@ -16,6 +16,13 @@ namespace csv_tagger
 {
     public partial class Form1 : Form
     {
+        // Symbol.
+        private const string symbolSubTag = "@";
+        private const string symbolFolderTag = "#";
+
+        // Path of CSV file.
+        private const string pathTagsDatabaseCSV = "../../../../../csv/tags_database.csv";
+
         private int maxTagLayer = 0;
         private int maxTagRow = 50;
         private const int maxNumberOfLayer = 10;
@@ -35,7 +42,7 @@ namespace csv_tagger
             }
 
             // Read tags_database.csv
-            using (var reader = new StreamReader(@"../../../../../csv/tags_database.csv"))
+            using (var reader = new StreamReader(pathTagsDatabaseCSV))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 var records = csv.GetRecords<Tags>();
@@ -62,6 +69,9 @@ namespace csv_tagger
             arrangeTags();
             creatTreeViewTags();
             treeViewTags.ExpandAll();
+
+//            MessageBox.Show(maxTagRow.ToString());
+//            MessageBox.Show(tagsDatabase[maxTagRow].tagsLayer[0]);
         }
 
         private void creatTreeViewTags()
@@ -118,6 +128,9 @@ namespace csv_tagger
                 }
                 // Next row of tagsDatabase.
                 ++row;
+
+                // Update max row.
+                maxTagRow = row-1;
             }
         }
 
@@ -146,7 +159,7 @@ namespace csv_tagger
             }
             else
             {
-                while (tagsDatabase[row].tagsLayer[layer] == "@")
+                while (tagsDatabase[row].tagsLayer[layer] == symbolSubTag)
                 {
                     // Next layer.
                     ++layer;
@@ -171,7 +184,7 @@ namespace csv_tagger
                 type = tagType.emptyTag;
             }
             // folder-tags
-            else if (tagsDatabase[row].tagsLayer[getLayerOfTag(row)].IndexOf("#") == 0)
+            else if (tagsDatabase[row].tagsLayer[getLayerOfTag(row)].IndexOf(symbolFolderTag) == 0)
             {
                 type = tagType.folderTag;
             }
