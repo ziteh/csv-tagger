@@ -21,7 +21,7 @@ namespace csv_tagger
         private const string symbolFolderTag = "#";
 
         // Path of CSV file.
-        private const string pathTagsDatabaseCSV = "../../../../../csv/tags_database.csv";
+        private const string pathTagsDatabaseCSV = @"../../../../../csv/tags_database.csv";
 
         private int maxTagRow = 50;
         private const int maxNumberOfLayer = 10;
