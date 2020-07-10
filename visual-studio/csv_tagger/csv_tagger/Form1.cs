@@ -204,9 +204,7 @@ namespace csv_tagger
         /// <returns></returns>
         private bool isEmptyTag(int row)
         {
-            if ((tagsDatabase[row].tagsLayer[0] == null) ||
-                (tagsDatabase[row].tagsLayer[0] == "") ||
-                (tagsDatabase[row].tagsLayer[0] == String.Empty))
+            if(string.IsNullOrEmpty(tagsDatabase[row].tagsLayer[0]) == true)
                 return true;
             else
                 return false;
